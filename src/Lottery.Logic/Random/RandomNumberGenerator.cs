@@ -16,8 +16,8 @@ public class RandomNumberGenerator : IRandomNumberGenerator
         _random = new System.Random(seed);
     }
 
-    public int GenerateNewRandomNumber(int min, int max)
+    public int GenerateNewRandomNumber(int minValue, int maxValue)
     {
-        return _random.Next(min, max);
+        return _random.Next(minValue, maxValue);
     }
 }

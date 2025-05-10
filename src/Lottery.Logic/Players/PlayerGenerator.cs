@@ -16,5 +16,5 @@ public class PlayerGenerator : IPlayerGenerator
         _options = options;
     }
 
-    public Player GenerateNewPlayer(string name) => new Player(name, _options.Value.StartingBalance);
+    public Player GenerateNewPlayer(string name) => new(name, _options.Value.StartingBalance);
 }

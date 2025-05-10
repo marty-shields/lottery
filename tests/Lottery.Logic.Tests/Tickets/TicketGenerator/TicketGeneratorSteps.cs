@@ -5,7 +5,6 @@ using Lottery.Core.Configuration;
 using Lottery.Core.Entities;
 using Lottery.Core.Interfaces.Tickets;
 using Lottery.Core.Results;
-using Lottery.Logic.Tickets;
 
 using Microsoft.Extensions.Options;
 
@@ -26,8 +25,8 @@ public class TicketGeneratorSteps
     private IEnumerable<Ticket>? _ticketsGenerated;
     private Exception? _exceptionThrown;
 
-    [Given("the player has a balance of {double} and is requesting {int} tickets")]
-    public void GivenThePlayerHasABalanceOf(double balance, int ticketCount)
+    [Given("the player has a balance of {decimal} and is requesting {int} tickets")]
+    public void GivenThePlayerHasABalanceOf(decimal balance, int ticketCount)
     {
         _player = new Player("TestPlayer", balance);
         _ticketCount = ticketCount;
@@ -46,10 +45,10 @@ public class TicketGeneratorSteps
 
         _validatorServiceMock = new Mock<ITicketValidatorService>();
         _validatorServiceMock.Setup(x => x.ValidatePlayerRequestedTickets(_player!, ticketCount))
-            .Returns(new TicketValidatorServiceResult(new List<TicketValidatorResult>
-            {
+            .Returns(new TicketValidatorServiceResult(
+            [
                 TicketValidatorResult.Valid()
-            }));
+            ]));
     }
 
     [Given("the validation fails with between {int} and {int} tickets with a ticket price of {int} with {int} tickets")]
@@ -65,10 +64,10 @@ public class TicketGeneratorSteps
 
         _validatorServiceMock = new Mock<ITicketValidatorService>();
         _validatorServiceMock.Setup(x => x.ValidatePlayerRequestedTickets(_player!, ticketCount))
-            .Returns(new TicketValidatorServiceResult(new List<TicketValidatorResult>
-            {
+            .Returns(new TicketValidatorServiceResult(
+            [
                 TicketValidatorResult.Invalid("Validation failed")
-            }));
+            ]));
     }
 
     [When("the player generates the tickets requested")]

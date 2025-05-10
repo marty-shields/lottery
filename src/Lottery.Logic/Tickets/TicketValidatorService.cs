@@ -15,10 +15,10 @@ public class TicketValidatorService : ITicketValidatorService
 
     public TicketValidatorServiceResult ValidatePlayerRequestedTickets(Player player, int ticketCount)
     {
-        var results = new List<TicketValidatorResult>();
-        foreach (var validator in _ticketValidators)
+        List<TicketValidatorResult> results = [];
+        foreach (ITicketValidator validator in _ticketValidators)
         {
-            var result = validator.Validate(player, ticketCount);
+            TicketValidatorResult result = validator.Validate(player, ticketCount);
             results.Add(result);
         }
 

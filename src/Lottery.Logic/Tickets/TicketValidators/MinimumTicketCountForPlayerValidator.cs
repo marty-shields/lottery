@@ -18,11 +18,8 @@ public class MinimumTicketCountForPlayerValidator : ITicketValidator
 
     public TicketValidatorResult Validate(Player player, int ticketCount)
     {
-        if (ticketCount < _minimumTicketPerUser)
-        {
-            return TicketValidatorResult.Invalid($"Player must have at least {_minimumTicketPerUser} tickets.");
-        }
-
-        return TicketValidatorResult.Valid();
+        return ticketCount < _minimumTicketPerUser
+            ? TicketValidatorResult.Invalid($"Player must have at least {_minimumTicketPerUser} tickets.")
+            : TicketValidatorResult.Valid();
     }
 }

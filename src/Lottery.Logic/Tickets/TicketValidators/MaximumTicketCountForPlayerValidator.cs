@@ -18,11 +18,8 @@ public class MaximumTicketCountForPlayerValidator : ITicketValidator
 
     public TicketValidatorResult Validate(Player player, int ticketCount)
     {
-        if (ticketCount > _maximumTicketPerUser)
-        {
-            return TicketValidatorResult.Invalid($"Player must not have more than {_maximumTicketPerUser} tickets.");
-        }
-
-        return TicketValidatorResult.Valid();
+        return ticketCount > _maximumTicketPerUser
+            ? TicketValidatorResult.Invalid($"Player must not have more than {_maximumTicketPerUser} tickets.")
+            : TicketValidatorResult.Valid();
     }
 }

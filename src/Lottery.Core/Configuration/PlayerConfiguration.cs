@@ -18,21 +18,21 @@ public class PlayerConfiguration : IValidatableObject
         {
             yield return new ValidationResult(
                 $"MaxPlayers ({MaximumPlayersAllowed}) cannot be less than MinPlayers ({MinimumPlayersAllowed}).",
-                new[] { nameof(MaximumPlayersAllowed), nameof(MinimumPlayersAllowed) });
+                [nameof(MaximumPlayersAllowed), nameof(MinimumPlayersAllowed)]);
         }
 
         if (MinimumPlayersAllowed < 1)
         {
             yield return new ValidationResult(
                 $"MinPlayers ({MinimumPlayersAllowed}) cannot be less than 1.",
-                new[] { nameof(MinimumPlayersAllowed) });
+                [nameof(MinimumPlayersAllowed)]);
         }
 
         if (StartingBalance < 1)
         {
             yield return new ValidationResult(
                 $"StartingBalance ({StartingBalance}) cannot be negative.",
-                new[] { nameof(StartingBalance) });
+                [nameof(StartingBalance)]);
         }
     }
 }

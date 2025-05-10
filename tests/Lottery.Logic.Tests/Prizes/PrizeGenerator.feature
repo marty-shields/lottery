@@ -4,6 +4,7 @@ Feature: Prize Generator
         Given the lottery has <ticketSold> tickets sold
         And the price of each ticket was 1
         And the random number generator is setup to always return 0
+        And the prize payouts are set to 50% for the grand prize, 30% for the second tier, and 10% for the third tier
         When I generate the prizes
         Then I should have 1 grand prize winner that won <grandPrizeAmount>
         And I should have <secondTierWinners> second tier winner that won <secondTierAmount>

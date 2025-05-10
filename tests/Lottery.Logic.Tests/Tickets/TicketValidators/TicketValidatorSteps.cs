@@ -19,7 +19,7 @@ public class TicketValidatorSteps
     [Given("the player has {int} tickets")]
     public void GivenPlayerHasTickets(int ticketCount)
     {
-        Core.Entities.Player player = new Core.Entities.Player("Player 1", 10);
+        Core.Entities.Player player = new("Player 1", 10);
         Core.Entities.Ticket[] tickets = new Core.Entities.Ticket[ticketCount];
         for (int i = 0; i < ticketCount; i++)
         {

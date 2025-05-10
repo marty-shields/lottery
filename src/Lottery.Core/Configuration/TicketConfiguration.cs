@@ -7,7 +7,7 @@ public class TicketConfiguration : IValidatableObject
     public const string SectionName = "Ticket";
     public required int MaximumTicketsPerPlayer { get; set; }
     public required int MinimumTicketsPerPlayer { get; set; }
-    public required double TicketPrice { get; set; }
+    public required decimal TicketPrice { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -15,21 +15,21 @@ public class TicketConfiguration : IValidatableObject
         {
             yield return new ValidationResult(
                 $"MaxTicketsPerUser ({MaximumTicketsPerPlayer}) cannot be less than MinimumTicketPerUser ({MinimumTicketsPerPlayer}).",
-                new[] { nameof(MaximumTicketsPerPlayer), nameof(MinimumTicketsPerPlayer) });
+                [nameof(MaximumTicketsPerPlayer), nameof(MinimumTicketsPerPlayer)]);
         }
 
         if (MinimumTicketsPerPlayer < 1)
         {
             yield return new ValidationResult(
                 $"MinimumTicketPerUser ({MinimumTicketsPerPlayer}) cannot be less than 1.",
-                new[] { nameof(MinimumTicketsPerPlayer) });
+                [nameof(MinimumTicketsPerPlayer)]);
         }
 
         if (TicketPrice < 1)
         {
             yield return new ValidationResult(
                 $"TicketPrice ({TicketPrice}) cannot be negative.",
-                new[] { nameof(TicketPrice) });
+                [nameof(TicketPrice)]);
         }
     }
 }

@@ -35,7 +35,7 @@ public class Lottery
     {
         Player humanPlayer = _playerFactory.CreateHumanPlayer();
         IEnumerable<Player> computerPlayers = _playerFactory.CreateComputerPlayers();
-        List<Ticket> ticketsPurchased = new List<Ticket>();
+        List<Ticket> ticketsPurchased = [];
 
         Console.WriteLine($"Welcome to the Bede Lottery, {humanPlayer.Name}");
         Console.WriteLine($"* Your digital balance is: {humanPlayer.Balance}");
@@ -48,12 +48,12 @@ public class Lottery
         Console.WriteLine($"{computerPlayers.Count()} other CPU players have also purchased tickets");
         Console.WriteLine("Tickets purchased:");
         Console.WriteLine($"Total: {ticketsPurchased.Count}");
-        foreach (var tickets in ticketsPurchased.GroupBy(x => x.PlayerName))
+        foreach (IGrouping<string, Ticket> tickets in ticketsPurchased.GroupBy(x => x.PlayerName))
         {
             Console.WriteLine($"{tickets.Key}: {tickets.Count()}");
         }
 
-        var prizeResults = _prizeGenerator.GeneratePrizes(ticketsPurchased);
+        Prize prizeResults = _prizeGenerator.GeneratePrizes(ticketsPurchased);
         Console.WriteLine();
         Console.WriteLine("Ticket draw results:");
         Console.WriteLine($"* Grand prize: {prizeResults.GrandPrizeTicket!.PlayerName} wins {prizeResults.GrandPrizeAmount:C}");
@@ -73,8 +73,8 @@ public class Lottery
 
     private IEnumerable<Ticket> GenerateTicketsForCPUPlayers(IEnumerable<Player> computerPlayers)
     {
-        List<Ticket> totalTickets = new List<Ticket>();
-        foreach (var player in computerPlayers)
+        List<Ticket> totalTickets = [];
+        foreach (Player player in computerPlayers)
         {
             int ticketsToPurchase = _randomNumberGenerator
                 .GenerateNewRandomNumber(
@@ -90,19 +90,17 @@ public class Lottery
 
     private IEnumerable<Ticket> GenerateTicketsForHuman(Player humanPlayer)
     {
-        List<Ticket> totalTickets = new List<Ticket>();
+        List<Ticket> totalTickets = [];
         bool successfulInput = false;
         while (!successfulInput)
         {
             Console.WriteLine($"How many tickets would you like to buy {humanPlayer.Name}?");
-            successfulInput = int.TryParse(Console.ReadLine(), out int humanPlayerTicketsRequested);
+            successfulInput = int.TryParse(Console.ReadLine(), out int humanPlayerTicketsRequested) && humanPlayerTicketsRequested > 0;
             if (successfulInput)
             {
                 try
                 {
                     totalTickets.AddRange(_ticketGenerator.GenerateTicketsForPlayer(humanPlayer, humanPlayerTicketsRequested));
-                    AdjustPlayerBalance(humanPlayer, totalTickets.Count);
-
                     if (totalTickets.Count < humanPlayerTicketsRequested)
                     {
                         Console.WriteLine($"Warning, {humanPlayerTicketsRequested} tickets were requested however only {totalTickets.Count} were purchased");
@@ -121,12 +119,5 @@ public class Lottery
         }
 
         return totalTickets;
-    }
-
-    private void AdjustPlayerBalance(Player player, int requestedTicketsCount)
-    {
-        double ticketPrice = _ticketOptions.Value.TicketPrice;
-        double totalCost = requestedTicketsCount * ticketPrice;
-        player.DeductBalance(totalCost);
     }
 }

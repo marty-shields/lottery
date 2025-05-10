@@ -23,5 +23,9 @@ public static class DependencyInjectionRegistration
             .BindConfiguration(TicketConfiguration.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
+        services.AddOptions<PrizeConfiguration>()
+            .BindConfiguration(PrizeConfiguration.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 }

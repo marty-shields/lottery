@@ -22,15 +22,15 @@ public class TicketValidatorServiceSteps
     [Given("there are validators that would mark the tickets as valid")]
     public void GivenValidatorsMarkTicketsAsValid()
     {
-        var player = _context["player"] as Core.Entities.Player;
-        var tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
+        Core.Entities.Player? player = _context["player"] as Core.Entities.Player;
+        IEnumerable<Core.Entities.Ticket>? tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
 
-        var ticketValidatorMockList = new List<Mock<ITicketValidator>>();
+        List<Mock<ITicketValidator>> ticketValidatorMockList = [];
         for (int i = 0; i < 3; i++)
         {
-            var ticketValidatorMock = new Mock<ITicketValidator>();
+            Mock<ITicketValidator> ticketValidatorMock = new();
             ticketValidatorMock.Setup(v => v.Validate(player!, tickets!.Count()))
-                .Returns(new TicketValidatorResult(true, Enumerable.Empty<string>()));
+                .Returns(new TicketValidatorResult(true, []));
             ticketValidatorMockList.Add(ticketValidatorMock);
         }
         _context.Add("ITicketValidatorMockList", ticketValidatorMockList);
@@ -39,20 +39,20 @@ public class TicketValidatorServiceSteps
     [Given("there are validators that would mark the tickets as invalid")]
     public void GivenValidatorsMarkTicketsAsInvalid()
     {
-        var player = _context["player"] as Core.Entities.Player;
-        var tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
+        Core.Entities.Player? player = _context["player"] as Core.Entities.Player;
+        IEnumerable<Core.Entities.Ticket>? tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
 
-        var ticketValidatorMockList = new List<Mock<ITicketValidator>>();
-        var ticketValidatorMockErrorList = new List<Mock<ITicketValidator>>();
+        List<Mock<ITicketValidator>> ticketValidatorMockList = [];
+        List<Mock<ITicketValidator>> ticketValidatorMockErrorList = [];
         for (int i = 0; i < 3; i++)
         {
-            var ticketValidatorMockError = new Mock<ITicketValidator>();
+            Mock<ITicketValidator> ticketValidatorMockError = new();
             ticketValidatorMockError.Setup(v => v.Validate(player!, tickets!.Count()))
-                .Returns(TicketValidatorResult.Invalid(new[] { $"Error{i}" }));
+                .Returns(TicketValidatorResult.Invalid([$"Error{i}"]));
             ticketValidatorMockList.Add(ticketValidatorMockError);
             ticketValidatorMockErrorList.Add(ticketValidatorMockError);
 
-            var ticketValidatorMock = new Mock<ITicketValidator>();
+            Mock<ITicketValidator> ticketValidatorMock = new();
             ticketValidatorMock.Setup(v => v.Validate(player!, tickets!.Count()))
                 .Returns(TicketValidatorResult.Valid());
             ticketValidatorMockList.Add(ticketValidatorMock);
@@ -64,12 +64,12 @@ public class TicketValidatorServiceSteps
     [When("the player tries to validate the tickets")]
     public void WhenPlayerTriesToValidateTickets()
     {
-        var player = _context["player"] as Core.Entities.Player;
-        var tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
-        var ticketValidatorMockList = _context["ITicketValidatorMockList"] as List<Mock<ITicketValidator>>;
+        Core.Entities.Player? player = _context["player"] as Core.Entities.Player;
+        IEnumerable<Core.Entities.Ticket>? tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
+        List<Mock<ITicketValidator>>? ticketValidatorMockList = _context["ITicketValidatorMockList"] as List<Mock<ITicketValidator>>;
 
-        var ticketValidatorService = new TicketValidatorService(ticketValidatorMockList!.Select(v => v.Object));
-        var result = ticketValidatorService.ValidatePlayerRequestedTickets(player!, tickets!.Count());
+        TicketValidatorService ticketValidatorService = new(ticketValidatorMockList!.Select(v => v.Object));
+        TicketValidatorServiceResult result = ticketValidatorService.ValidatePlayerRequestedTickets(player!, tickets!.Count());
 
         _context.Add("result", result);
     }
@@ -77,16 +77,16 @@ public class TicketValidatorServiceSteps
     [Then("the result should come back as invalid with errors")]
     public void ThenResultShouldBeInvalidWithErrors()
     {
-        var result = _context["result"] as TicketValidatorServiceResult;
+        TicketValidatorServiceResult? result = _context["result"] as TicketValidatorServiceResult;
 
         Assert.IsNotNull(result);
         Assert.IsFalse(result.IsValid);
 
-        var ticketValidatorMockErrorList = _context["ITicketValidatorMockErrorList"] as List<Mock<ITicketValidator>>;
-        Assert.AreEqual(ticketValidatorMockErrorList!.Count(), result.Errors.Count());
+        List<Mock<ITicketValidator>>? ticketValidatorMockErrorList = _context["ITicketValidatorMockErrorList"] as List<Mock<ITicketValidator>>;
+        Assert.AreEqual(ticketValidatorMockErrorList!.Count, result.Errors.Count());
         for (int i = 0; i < result.Errors.Count(); i++)
         {
-            var error = $"Error{i}";
+            string error = $"Error{i}";
             Assert.IsTrue(result.Errors.Contains(error));
         }
     }
@@ -94,7 +94,7 @@ public class TicketValidatorServiceSteps
     [Then("the result should come back as valid with no errors")]
     public void ThenResultShouldBeValidWithNoErrors()
     {
-        var result = _context["result"] as TicketValidatorServiceResult;
+        TicketValidatorServiceResult? result = _context["result"] as TicketValidatorServiceResult;
 
         Assert.IsNotNull(result);
         Assert.IsTrue(result.IsValid);
@@ -104,11 +104,11 @@ public class TicketValidatorServiceSteps
     [Then("each validator should be called once")]
     public void GivenEachValidatorShouldBeCalledOnce()
     {
-        var player = _context["player"] as Core.Entities.Player;
-        var tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
-        var ticketValidatorMockList = _context["ITicketValidatorMockList"] as List<Mock<ITicketValidator>>;
+        Core.Entities.Player? player = _context["player"] as Core.Entities.Player;
+        IEnumerable<Core.Entities.Ticket>? tickets = _context["tickets"] as IEnumerable<Core.Entities.Ticket>;
+        List<Mock<ITicketValidator>>? ticketValidatorMockList = _context["ITicketValidatorMockList"] as List<Mock<ITicketValidator>>;
 
-        foreach (var validatorMock in ticketValidatorMockList!)
+        foreach (Mock<ITicketValidator> validatorMock in ticketValidatorMockList!)
         {
             validatorMock.Verify(v => v.Validate(player!, tickets!.Count()), Times.Once);
             validatorMock.Verify(v => v.Validate(It.IsAny<Core.Entities.Player>(), It.IsAny<int>()), Times.Once);

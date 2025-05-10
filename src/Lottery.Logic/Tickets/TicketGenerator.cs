@@ -19,24 +19,24 @@ public class TicketGenerator : ITicketGenerator
 
     public IEnumerable<Ticket> GenerateTicketsForPlayer(Player player, int requestedTicketsCount)
     {
-        var adjustedTicketsCount = AdjustRequestTicketsCountForPlayer(player, requestedTicketsCount);
+        int adjustedTicketsCount = AdjustRequestTicketsCountForPlayer(player, requestedTicketsCount);
 
         if (adjustedTicketsCount == 0)
         {
             throw new InvalidOperationException("Player does not have enough balance to generate tickets.");
         }
 
-        var validationResult = _ticketValidatorService.ValidatePlayerRequestedTickets(player, adjustedTicketsCount);
+        Core.Results.TicketValidatorServiceResult validationResult = _ticketValidatorService.ValidatePlayerRequestedTickets(player, adjustedTicketsCount);
 
         if (!validationResult.IsValid)
         {
             throw new InvalidOperationException("Ticket generation failed due to validation errors.");
         }
 
-        var tickets = new List<Ticket>();
-        for (var i = 0; i < adjustedTicketsCount; i++)
+        List<Ticket> tickets = [];
+        for (int i = 0; i < adjustedTicketsCount; i++)
         {
-            var ticket = new Ticket(player.Name);
+            Ticket ticket = new(player.Name);
             tickets.Add(ticket);
         }
 
@@ -45,9 +45,9 @@ public class TicketGenerator : ITicketGenerator
 
     private int AdjustRequestTicketsCountForPlayer(Player player, int requestedTicketsCount)
     {
-        var playerBalance = player.Balance;
-        var ticketPrice = _ticketConfiguration.Value.TicketPrice;
-        var maxTickets = (int)(playerBalance / ticketPrice);
+        decimal playerBalance = player.Balance;
+        decimal ticketPrice = _ticketConfiguration.Value.TicketPrice;
+        int maxTickets = (int)(playerBalance / ticketPrice);
         return requestedTicketsCount > maxTickets ? maxTickets : requestedTicketsCount;
     }
 }

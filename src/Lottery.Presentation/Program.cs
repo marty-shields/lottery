@@ -8,6 +8,6 @@ builder.Services.SetupConfiguration();
 builder.Services.RegisterRequiredDependencies();
 using IHost host = builder.Build();
 
-var ticketOptions = host.Services.GetRequiredService<Lottery.Presentation.Lottery>();
+Lottery.Presentation.Lottery ticketOptions = host.Services.GetRequiredService<Lottery.Presentation.Lottery>();
 ticketOptions.Run();
 Console.Read();
