@@ -1,0 +1,54 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+[Bb]in/
+[Oo]bj/
+
+# Rider project files
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.csproj.user
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Visual Studio Code
+.vscode/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Packages
+*.nupkg
+*.snupkg
+
+# Backup & Report files
+*.bak
+*.swp
+*.csv
+*.pdb
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# DotNet specific
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+#reqnroll
+*.feature.cs

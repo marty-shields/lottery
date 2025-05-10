@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{250F283E-FE2F-4BBD-9E63-A2265B84E23F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F4BB53B6-F4D0-4706-B420-13AC4239BB4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.Presentation", "src\Lottery.Presentation\Lottery.Presentation.csproj", "{FA3C3F7E-3E53-4BDF-9168-9E11144F8933}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.Core", "src\Lottery.Core\Lottery.Core.csproj", "{AD2498F9-5A54-4958-BDE0-034CA56D6F72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.Logic", "src\Lottery.Logic\Lottery.Logic.csproj", "{238DCA67-A0AC-4DDD-99C6-A18E97BE4909}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{38001C41-87EE-4EA1-9641-6F2B062C1107}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.Logic.Tests", "tests\Lottery.Logic.Tests\Lottery.Logic.Tests.csproj", "{9BFE5F27-E473-4A89-99A7-D502634EDD06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA3C3F7E-3E53-4BDF-9168-9E11144F8933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA3C3F7E-3E53-4BDF-9168-9E11144F8933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA3C3F7E-3E53-4BDF-9168-9E11144F8933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA3C3F7E-3E53-4BDF-9168-9E11144F8933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD2498F9-5A54-4958-BDE0-034CA56D6F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD2498F9-5A54-4958-BDE0-034CA56D6F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD2498F9-5A54-4958-BDE0-034CA56D6F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD2498F9-5A54-4958-BDE0-034CA56D6F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238DCA67-A0AC-4DDD-99C6-A18E97BE4909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238DCA67-A0AC-4DDD-99C6-A18E97BE4909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238DCA67-A0AC-4DDD-99C6-A18E97BE4909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238DCA67-A0AC-4DDD-99C6-A18E97BE4909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BFE5F27-E473-4A89-99A7-D502634EDD06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BFE5F27-E473-4A89-99A7-D502634EDD06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BFE5F27-E473-4A89-99A7-D502634EDD06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BFE5F27-E473-4A89-99A7-D502634EDD06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FA3C3F7E-3E53-4BDF-9168-9E11144F8933} = {F4BB53B6-F4D0-4706-B420-13AC4239BB4D}
+		{AD2498F9-5A54-4958-BDE0-034CA56D6F72} = {F4BB53B6-F4D0-4706-B420-13AC4239BB4D}
+		{238DCA67-A0AC-4DDD-99C6-A18E97BE4909} = {F4BB53B6-F4D0-4706-B420-13AC4239BB4D}
+		{9BFE5F27-E473-4A89-99A7-D502634EDD06} = {38001C41-87EE-4EA1-9641-6F2B062C1107}
+	EndGlobalSection
+EndGlobal
