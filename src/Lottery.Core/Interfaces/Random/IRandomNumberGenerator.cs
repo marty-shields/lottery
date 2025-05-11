@@ -8,8 +8,8 @@ public interface IRandomNumberGenerator
     /// <param name="minValue">Inclusive lower bound</param>
     /// <param name="maxValue">Exclusive upper bound</param>
     /// <returns>A random number between min and max</returns>
-    /// // Exceptions:
-    //   T:System.ArgumentOutOfRangeException:
-    //     minValue is greater than maxValue.
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    /// Thrown when minValue is greater than maxValue.
+    /// </exception>
     int GenerateNewRandomNumber(int minValue, int maxValue);
 }

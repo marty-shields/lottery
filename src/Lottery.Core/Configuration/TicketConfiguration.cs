@@ -11,25 +11,29 @@ public class TicketConfiguration : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        var results = new List<ValidationResult>();
+
         if (MaximumTicketsPerPlayer < MinimumTicketsPerPlayer)
         {
-            yield return new ValidationResult(
-                $"MaxTicketsPerUser ({MaximumTicketsPerPlayer}) cannot be less than MinimumTicketPerUser ({MinimumTicketsPerPlayer}).",
-                [nameof(MaximumTicketsPerPlayer), nameof(MinimumTicketsPerPlayer)]);
+            results.Add(new ValidationResult(
+                $"MaximumTicketsPerPlayer ({MaximumTicketsPerPlayer}) cannot be less than MinimumTicketsPerPlayer ({MinimumTicketsPerPlayer}).",
+                [nameof(MaximumTicketsPerPlayer), nameof(MinimumTicketsPerPlayer)]));
         }
 
         if (MinimumTicketsPerPlayer < 1)
         {
-            yield return new ValidationResult(
-                $"MinimumTicketPerUser ({MinimumTicketsPerPlayer}) cannot be less than 1.",
-                [nameof(MinimumTicketsPerPlayer)]);
+            results.Add(new ValidationResult(
+                $"MinimumTicketsPerPlayer ({MinimumTicketsPerPlayer}) cannot be less than 1.",
+                [nameof(MinimumTicketsPerPlayer)]));
         }
 
         if (TicketPrice < 1)
         {
-            yield return new ValidationResult(
+            results.Add(new ValidationResult(
                 $"TicketPrice ({TicketPrice}) cannot be negative.",
-                [nameof(TicketPrice)]);
+                [nameof(TicketPrice)]));
         }
+
+        return results;
     }
 }

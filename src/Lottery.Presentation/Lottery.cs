@@ -11,7 +11,7 @@ namespace Lottery.Presentation;
 
 public class Lottery
 {
-    private readonly IOptions<TicketConfiguration> _ticketOptions;
+    private readonly TicketConfiguration _ticketConfiguration;
     private readonly IPlayerFactory _playerFactory;
     private readonly ITicketGenerator _ticketGenerator;
     private readonly IRandomNumberGenerator _randomNumberGenerator;
@@ -24,7 +24,7 @@ public class Lottery
         IRandomNumberGenerator randomNumberGenerator,
         IPrizeGenerator prizeGenerator)
     {
-        _ticketOptions = ticketOptions;
+        _ticketConfiguration = ticketOptions.Value;
         _playerFactory = playerFactory;
         _ticketGenerator = ticketGenerator;
         _randomNumberGenerator = randomNumberGenerator;
@@ -39,7 +39,7 @@ public class Lottery
 
         Console.WriteLine($"Welcome to the Bede Lottery, {humanPlayer.Name}");
         Console.WriteLine($"* Your digital balance is: {humanPlayer.Balance}");
-        Console.WriteLine($"* Ticket price: {_ticketOptions.Value.TicketPrice:C}");
+        Console.WriteLine($"* Ticket price: {_ticketConfiguration.TicketPrice:C}");
         Console.WriteLine();
 
         ticketsPurchased.AddRange(GenerateTicketsForHuman(humanPlayer));
@@ -67,7 +67,7 @@ public class Lottery
     {
         IOrderedEnumerable<IGrouping<string, Ticket>> winnersGrouped = winningTickets
             .GroupBy(t => t.PlayerName)
-            .OrderBy(t => t.Key);
+            .OrderBy(t => int.Parse(t.Key.Split(' ')[1]));
         return string.Join(", ", winnersGrouped.Select(g => $"{g.Key}{(g.Count() > 1 ? $"(x{g.Count()})" : string.Empty)}"));
     }
 
@@ -78,8 +78,8 @@ public class Lottery
         {
             int ticketsToPurchase = _randomNumberGenerator
                 .GenerateNewRandomNumber(
-                    _ticketOptions.Value.MinimumTicketsPerPlayer,
-                    _ticketOptions.Value.MaximumTicketsPerPlayer + 1
+                    _ticketConfiguration.MinimumTicketsPerPlayer,
+                    _ticketConfiguration.MaximumTicketsPerPlayer + 1
                 );
 
             totalTickets.AddRange(_ticketGenerator.GenerateTicketsForPlayer(player, ticketsToPurchase));

@@ -1,7 +1,5 @@
 namespace Lottery.Core.Entities;
 
-public class Player(string name, decimal balance)
+public record Player(string Name, decimal Balance)
 {
-    public string Name { get; } = name;
-    public decimal Balance { get; private set; } = balance;
 }

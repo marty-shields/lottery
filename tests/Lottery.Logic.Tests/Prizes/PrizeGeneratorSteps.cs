@@ -87,7 +87,7 @@ public class PrizeGeneratorSteps
     public void ThenIShouldHaveSecondTierWinnerThatWon(int winnerCount, decimal prizeAmount)
     {
         Assert.IsNotNull(_prize);
-        Assert.AreEqual(winnerCount, _prize.SecondTierPrizeTickets.Count);
+        Assert.AreEqual(winnerCount, _prize.SecondTierPrizeTickets.Count());
         for (int i = 0; i < winnerCount; i++)
         {
             Assert.AreEqual(_tickets![i + 1], _prize.SecondTierPrizeTickets.ElementAt(i));
@@ -100,7 +100,7 @@ public class PrizeGeneratorSteps
     public void ThenIShouldHaveThirdTierWinnersThatWon(int winnerCount, decimal prizeAmount)
     {
         Assert.IsNotNull(_prize);
-        Assert.AreEqual(winnerCount, _prize.ThirdTierPrizeTickets.Count);
+        Assert.AreEqual(winnerCount, _prize.ThirdTierPrizeTickets.Count());
         for (int i = 0; i < winnerCount; i++)
         {
             Assert.AreEqual(_tickets![i + _secondTierWinners + 1], _prize.ThirdTierPrizeTickets.ElementAt(i));

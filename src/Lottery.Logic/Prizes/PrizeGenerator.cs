@@ -11,8 +11,8 @@ namespace Lottery.Logic.Prizes;
 public class PrizeGenerator : IPrizeGenerator
 {
     private readonly IRandomNumberGenerator _randomNumberGenerator;
-    private readonly IOptions<TicketConfiguration> _ticketConfiguration;
-    private readonly IOptions<PrizeConfiguration> _prizeConfiguration;
+    private readonly TicketConfiguration _ticketConfiguration;
+    private readonly PrizeConfiguration _prizeConfiguration;
 
     public PrizeGenerator(
         IRandomNumberGenerator randomNumberGenerator,
@@ -20,68 +20,72 @@ public class PrizeGenerator : IPrizeGenerator
         IOptions<PrizeConfiguration> prizeConfiguration)
     {
         _randomNumberGenerator = randomNumberGenerator;
-        _ticketConfiguration = ticketConfiguration;
-        _prizeConfiguration = prizeConfiguration;
+        _ticketConfiguration = ticketConfiguration.Value;
+        _prizeConfiguration = prizeConfiguration.Value;
     }
 
     public Prize GeneratePrizes(IEnumerable<Ticket> tickets)
     {
-        Prize prize = new();
-        decimal totalPrizeMoney = tickets.Count() * _ticketConfiguration.Value.TicketPrice;
+        decimal totalPrizeMoney = tickets.Count() * _ticketConfiguration.TicketPrice;
         List<Ticket> ticketsThatCanWin = [.. tickets];
 
-        CalculateGrandPrizeWinner(prize, totalPrizeMoney, ticketsThatCanWin);
-        CalculateSecondTierWinners(tickets, prize, totalPrizeMoney, ticketsThatCanWin);
-        CalculateThirdTierWinners(tickets, prize, totalPrizeMoney, ticketsThatCanWin);
-        CalculateHouseProfit(prize, totalPrizeMoney);
+        (Ticket grandPrizeWinner, decimal grandPrizeAmount) = CalculateGrandPrizeWinner(totalPrizeMoney, ticketsThatCanWin);
+        (IEnumerable<Ticket> secondTierWinners, decimal secondTierAmount) = CalculateTierWinners(tickets, totalPrizeMoney, ticketsThatCanWin, _prizeConfiguration.SecondPrizeWinnerCountPercentage, _prizeConfiguration.SecondPrizePayoutPercentage);
+        (IEnumerable<Ticket> thirdTierWinners, decimal thirdTierAmount) = CalculateTierWinners(tickets, totalPrizeMoney, ticketsThatCanWin, _prizeConfiguration.ThirdPrizeWinnerCountPercentage, _prizeConfiguration.ThirdPrizePayoutPercentage);
 
-        return prize;
+        decimal houseProfit = CalculateHouseProfit(totalPrizeMoney, grandPrizeAmount, secondTierWinners, secondTierAmount, thirdTierWinners, thirdTierAmount);
+
+        return new Prize(grandPrizeWinner, grandPrizeAmount, secondTierWinners, secondTierAmount, thirdTierWinners, thirdTierAmount, houseProfit);
     }
 
-    private void CalculateHouseProfit(Prize prize, decimal totalPrizeMoney)
+    private decimal CalculateHouseProfit(
+        decimal totalPrizeMoney,
+        decimal grandPrizeAmount,
+        IEnumerable<Ticket> secondTierWinners,
+        decimal secondTierAmount,
+        IEnumerable<Ticket> thirdTierWinners,
+        decimal thirdTierAmount)
     {
-        decimal grandPrizeTotal = prize.GrandPrizeAmount;
-        decimal secondTierTotal = prize.SecondTierPrizeAmount * prize.SecondTierPrizeTickets.Count;
-        decimal thirdTierTotal = prize.ThirdTierPrizeAmount * prize.ThirdTierPrizeTickets.Count;
+        decimal secondTierTotal = secondTierAmount * secondTierWinners.Count();
+        decimal thirdTierTotal = thirdTierAmount * thirdTierWinners.Count();
 
-        prize.HouseProfit = Math.Round(totalPrizeMoney - (grandPrizeTotal + secondTierTotal + thirdTierTotal), 2);
+        return Math.Round(totalPrizeMoney - (grandPrizeAmount + secondTierTotal + thirdTierTotal), 2);
     }
 
-    private void CalculateThirdTierWinners(IEnumerable<Ticket> tickets, Prize prize, decimal totalPrizeMoney, List<Ticket> ticketsThatCanWin)
+    private (IEnumerable<Ticket> tierWinners, decimal tierAmount) CalculateTierWinners(
+        IEnumerable<Ticket> tickets,
+        decimal totalPrizeMoney,
+        List<Ticket> ticketsThatCanWin,
+        decimal winnersCountPercentage,
+        decimal winnersPayoutPercentage)
     {
-        decimal thirdTierWinnerCount = Math.Round(tickets.Count() * _prizeConfiguration.Value.ThirdPrizeWinnerCountPercentage);
-        if (thirdTierWinnerCount > 0)
+        List<Ticket> tierWinners = new List<Ticket>();
+        decimal tierAmount = 0;
+        decimal tierWinnersCount = Math.Round(tickets.Count() * winnersCountPercentage);
+        if (tierWinnersCount > 0)
         {
-            prize.ThirdTierPrizeAmount = Math.Round(totalPrizeMoney * _prizeConfiguration.Value.ThirdPrizePayoutPercentage / thirdTierWinnerCount, 2);
-            for (int i = 0; i < thirdTierWinnerCount; i++)
+            tierAmount = Math.Round(totalPrizeMoney * winnersPayoutPercentage / tierWinnersCount, 2);
+            for (int i = 0; i < tierWinnersCount; i++)
             {
-                Ticket thirdTierWinner = ticketsThatCanWin.ElementAt(_randomNumberGenerator.GenerateNewRandomNumber(0, ticketsThatCanWin.Count));
-                prize.ThirdTierPrizeTickets.Add(thirdTierWinner);
-                _ = ticketsThatCanWin.Remove(thirdTierWinner);
+                Ticket tierWinner = ticketsThatCanWin.ElementAt(_randomNumberGenerator.GenerateNewRandomNumber(0, ticketsThatCanWin.Count));
+                tierWinners.Add(tierWinner);
+                RemoveWinningTicketFromPool(ticketsThatCanWin, tierWinner);
             }
         }
+
+        return (tierWinners, tierAmount);
     }
 
-    private void CalculateSecondTierWinners(IEnumerable<Ticket> tickets, Prize prize, decimal totalPrizeMoney, List<Ticket> ticketsThatCanWin)
-    {
-        decimal secondTierWinnerCount = Math.Round(tickets.Count() * _prizeConfiguration.Value.SecondPrizeWinnerCountPercentage);
-        if (secondTierWinnerCount > 0)
-        {
-            prize.SecondTierPrizeAmount = Math.Round(totalPrizeMoney * _prizeConfiguration.Value.SecondPrizePayoutPercentage / secondTierWinnerCount, 2);
-            for (int i = 0; i < secondTierWinnerCount; i++)
-            {
-                Ticket secondTierWinner = ticketsThatCanWin.ElementAt(_randomNumberGenerator.GenerateNewRandomNumber(0, ticketsThatCanWin.Count));
-                prize.SecondTierPrizeTickets.Add(secondTierWinner);
-                _ = ticketsThatCanWin.Remove(secondTierWinner);
-            }
-        }
-    }
-
-    private void CalculateGrandPrizeWinner(Prize prize, decimal totalPrizeMoney, List<Ticket> ticketsThatCanWin)
+    private (Ticket grandPrizeWinner, decimal grandPrizeAmount) CalculateGrandPrizeWinner(decimal totalPrizeMoney, List<Ticket> ticketsThatCanWin)
     {
         Ticket grandPrizeWinner = ticketsThatCanWin.ElementAt(_randomNumberGenerator.GenerateNewRandomNumber(0, ticketsThatCanWin.Count));
-        prize.GrandPrizeTicket = grandPrizeWinner;
-        prize.GrandPrizeAmount = Math.Round(totalPrizeMoney * _prizeConfiguration.Value.GrandPrizePayoutPercentage, 2);
-        _ = ticketsThatCanWin.Remove(grandPrizeWinner);
+        decimal grandPrizeAmount = Math.Round(totalPrizeMoney * _prizeConfiguration.GrandPrizePayoutPercentage, 2);
+        RemoveWinningTicketFromPool(ticketsThatCanWin, grandPrizeWinner);
+        return (grandPrizeWinner, grandPrizeAmount);
+    }
+
+    private void RemoveWinningTicketFromPool(List<Ticket> ticketsThatCanWin, Ticket winningTicket)
+    {
+        ticketsThatCanWin.Remove(winningTicket);
     }
 }
