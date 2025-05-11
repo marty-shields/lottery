@@ -24,6 +24,9 @@ mono_crash.*
 # Visual Studio Code
 .vscode/
 
+# Visual Studio
+.vs/
+
 # Logs
 *.log
 
