@@ -1,5 +1,3 @@
-using System;
-
 using Lottery.Core.Configuration;
 using Lottery.Core.Entities;
 using Lottery.Core.Interfaces.Prizes;
@@ -15,9 +13,9 @@ public class ThirdTierWinnerPicker : BaseTierWinnerPicker
     private readonly decimal _thirdPrizePayoutPercentage;
 
     public ThirdTierWinnerPicker(
-        IRandomNumberGenerator randomNumberGenerator, 
+        IRandomNumberGenerator randomNumberGenerator,
         IOptions<PrizeConfiguration> prizeConfigurationOptions,
-        IOptions<TicketConfiguration> ticketConfigurationOptions) : base(randomNumberGenerator,ticketConfigurationOptions)
+        IOptions<TicketConfiguration> ticketConfigurationOptions) : base(randomNumberGenerator, ticketConfigurationOptions)
     {
         _thirdPrizeWinnerCountPercentage = prizeConfigurationOptions.Value.ThirdPrizeWinnerCountPercentage;
         _thirdPrizePayoutPercentage = prizeConfigurationOptions.Value.ThirdPrizePayoutPercentage;

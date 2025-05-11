@@ -1,5 +1,3 @@
-using System;
-
 namespace Lottery.Core.Interfaces.Prizes;
 
 public interface IPrizeWinnerPickerFactory

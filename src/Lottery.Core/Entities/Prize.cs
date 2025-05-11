@@ -7,6 +7,4 @@ public record Prize(
     decimal SecondTierPrizeAmount,
     IEnumerable<Ticket> ThirdTierPrizeTickets,
     decimal ThirdTierPrizeAmount,
-    decimal HouseProfit)
-{
-}
+    decimal HouseProfit);

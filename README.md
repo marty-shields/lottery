@@ -11,9 +11,9 @@ Welcome to the Lottery Project! This repository contains the implementation of a
 - Extensible prize draw generation
 
 ## Possible Changes
-- Improved testing around prize winner picker
+- Improve testing around prize winner picker
     - The prize generator tests are more like an integration or end to end test testing the full prize generation rather than truly mocking out the winner pickers.
-- Refactored the presentation level to make it more readable
+- Refactor the presentation level to make it more readable
 - Grouping and ordering of the players when outputting the tiered winners relies upon the player names being very specific.
 - Logging & metrics inclusion
     - Logging in places such as logging exceptions as errors to make the system easy to debug upon issues
