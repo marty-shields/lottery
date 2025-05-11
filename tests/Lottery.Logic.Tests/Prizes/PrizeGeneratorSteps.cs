@@ -4,6 +4,7 @@ using Lottery.Core.Entities;
 using Lottery.Core.Interfaces.Prizes;
 using Lottery.Core.Interfaces.Random;
 using Lottery.Logic.Prizes;
+using Lottery.Logic.Prizes.WinnerPickers;
 
 using Microsoft.Extensions.Options;
 
@@ -23,6 +24,7 @@ public class PrizeGeneratorSteps
     private Mock<IRandomNumberGenerator>? _randomNumberGeneratorMock;
     private Prize? _prize;
     private int _secondTierWinners;
+    private Mock<IPrizeWinnerPickerFactory>? _factoryMock;
 
     [Given("the lottery has {int} tickets sold")]
     public void GivenTheLotteryHasTicketsSold(int ticketsSold)
@@ -71,7 +73,11 @@ public class PrizeGeneratorSteps
     [When("I generate the prizes")]
     public void WhenIGenerateThePrizes()
     {
-        IPrizeGenerator prizeGenerator = new PrizeGenerator(_randomNumberGeneratorMock!.Object, _ticketConfiguration!.Object, _prizeConfiguration!.Object);
+        _factoryMock = new Mock<IPrizeWinnerPickerFactory>();
+        _factoryMock.Setup(x => x.GetPrizeWinnerPicker(WinnerPickerType.GrandPrize)).Returns(new GrandPrizeWinnerPicker(_randomNumberGeneratorMock!.Object, _prizeConfiguration!.Object, _ticketConfiguration!.Object));
+        _factoryMock.Setup(x => x.GetPrizeWinnerPicker(WinnerPickerType.SecondTier)).Returns(new SecondTierWinnerPicker(_randomNumberGeneratorMock!.Object, _prizeConfiguration!.Object, _ticketConfiguration!.Object));
+        _factoryMock.Setup(x => x.GetPrizeWinnerPicker(WinnerPickerType.ThirdTier)).Returns(new ThirdTierWinnerPicker(_randomNumberGeneratorMock!.Object, _prizeConfiguration!.Object, _ticketConfiguration!.Object));
+        IPrizeGenerator prizeGenerator = new PrizeGenerator(_factoryMock.Object, _ticketConfiguration!.Object);
         _prize = prizeGenerator.GeneratePrizes(_tickets!);
     }
 
@@ -81,6 +87,7 @@ public class PrizeGeneratorSteps
         Assert.IsNotNull(_prize);
         Assert.AreEqual(_tickets![0], _prize.GrandPrizeTicket);
         Assert.AreEqual(prizeAmount, _prize.GrandPrizeAmount);
+        _factoryMock!.Verify(x => x.GetPrizeWinnerPicker(WinnerPickerType.GrandPrize), Times.Once);
     }
 
     [Then("I should have {int} second tier winner that won {float}")]
@@ -94,6 +101,7 @@ public class PrizeGeneratorSteps
         }
         Assert.AreEqual(prizeAmount, _prize.SecondTierPrizeAmount);
         _secondTierWinners = winnerCount;
+        _factoryMock!.Verify(x => x.GetPrizeWinnerPicker(WinnerPickerType.SecondTier), Times.Once);
     }
 
     [Then("I should have {int} third tier winners that won {float}")]
@@ -106,6 +114,7 @@ public class PrizeGeneratorSteps
             Assert.AreEqual(_tickets![i + _secondTierWinners + 1], _prize.ThirdTierPrizeTickets.ElementAt(i));
         }
         Assert.AreEqual(prizeAmount, _prize.ThirdTierPrizeAmount);
+        _factoryMock!.Verify(x => x.GetPrizeWinnerPicker(WinnerPickerType.ThirdTier), Times.Once);
     }
 
     [Then("the house profit should be {float}")]

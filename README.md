@@ -8,11 +8,11 @@ Welcome to the Lottery Project! This repository contains the implementation of a
 - Configurable lottery rules that are validated on startup
 - Dependency Injection
 - BDD tests
+- Extensible prize draw generation
 
 ## Possible Changes
-- Refactored the prize logic to make it more extensible.
-    - Could have possibly used the strategy pattern to determine different tiered winners
-    - Possibly chain of command pattern to link together the different possible tiers and run them in a list (similar to how the validation is done)
+- Improved testing around prize winner picker
+    - The prize generator tests are more like an integration or end to end test testing the full prize generation rather than truly mocking out the winner pickers.
 - Refactored the presentation level to make it more readable
 - Grouping and ordering of the players when outputting the tiered winners relies upon the player names being very specific.
 - Logging & metrics inclusion
